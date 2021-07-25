@@ -7,7 +7,7 @@ import moment from 'moment';
 //   color: 
 // }
 
-class Customers extends Component {
+class Wishlist extends Component {
   constructor() {
     super();
     this.state = {
@@ -22,7 +22,7 @@ class Customers extends Component {
     this.handleChange = this.handleFrom.bind(this);
     this.handleChange = this.handleTo.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleWishlist = this.handleWishlist.bind(this);
+
 
   }
 
@@ -57,52 +57,9 @@ class Customers extends Component {
     event.preventDefault();
   }
 
-  handleWishlist(id) {
-    console.log(id)
-
-    let infos = this.state.bitcoin_prices;
-
-    let final = infos.filter(info => {
-      return info.id === id
-    })
-
-    const format = {
-      date: final[0].date,
-      rate: final[0].rate,
-    }
-
-    // console.log(format)
-
-    // alert('alert this')
-    // async () => {
-    //   const rawResponse = await fetch('http://localhost:3000/api/wishlist', {
-    //     method: 'POST',
-    //     headers: {
-    //       'Accept': 'application/json',
-    //       'Content-Type': 'application/json'
-    //     },
-    //     // body: JSON.stringify({a: 1, b: 'Textual content'})
-    //     body: JSON.stringify(format)
-    //   });
-    //   const content = await rawResponse.json();
- 
-      fetch('http://localhost:3000/api/wishlist', {
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        // body: JSON.stringify({a: 1, b: 'Textual content'})
-        body: JSON.stringify(format)
-      }).then(res => console.log(res.json()));
-      
-      // const content = await rawResponse.json();
-  
-}
-
 
   componentDidMount() {
-    fetch('/api/bitcoin-prices')
+    fetch('/api/wishlist')
       .then(res => res.json())
       .then(bitcoin_prices => this.setState({bitcoin_prices}, () => console.log('bitcoin_prices fetched...', bitcoin_prices)));
   }
@@ -123,7 +80,7 @@ class Customers extends Component {
   render() {
     return (
       <div className="container text-left">
-        <h2 className="my-3 text-left">Select a range</h2>
+        <h2 className="my-3 text-left">Your Wishlist</h2>
 
         
         {/* <ul>
@@ -132,7 +89,7 @@ class Customers extends Component {
         )}
         </ul> */}
 
-    <form className="form-inline mb-2" onSubmit={this.handleSubmit}>
+    <form className="form-inline mb-2" onSubmit={this.handleSubmit}> 
     <div class="form-group mb-2">
     <label for="staticEmail2" className="sr-only">from</label>
     <input type="date" placeholder="From" value={this.state.value} onChange={this.handleFrom} />
@@ -160,7 +117,7 @@ class Customers extends Component {
       {/* <th scope="col">#</th> */}
       <th scope="col"  className="text-left">Date</th>
       <th scope="col" className="text-left">Price</th>
-      <th scope="col" className="text-left">Wishlist</th>
+      <th scope="col" className="text-left">Prime Numbers</th>
       
       
     </tr>
@@ -176,12 +133,12 @@ class Customers extends Component {
       <th scope="col" className="text-left">{moment(price.date).format("Do MMMM YYYY")}</th>
 
       
-      <th scope="col"  className="text-left"><span className={this.isOdd(price.rate)}>${price.rate}</span></th>
+      <th scope="col"  className="text-left"><span className={this.isOdd(price.bitcoin_value)}>${price.bitcoin_value}</span></th>
       <th scope="col" className="text-left">
         
         {/* {customer.rate} */}
 
-        <button type="button" onClick={() => this.handleWishlist(price.id)} class="btn btn-primary">Add to wishlist</button>
+        <button type="button" onClick={() => this.handleWishlist(price.id)} class="btn btn-primary">{price.prime_numbers}</button>
         
         </th>
       
@@ -196,4 +153,4 @@ class Customers extends Component {
   }
 }
 
-export default Customers;
+export default Wishlist;
