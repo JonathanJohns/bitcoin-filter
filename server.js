@@ -70,6 +70,6 @@ app.post('/api/wishlist',cors(), (req, res) => {
   );
 })
 
-const port = 3000;
+const port = 5000;
 
 app.listen(port, () => `Server running on port ${port}`);
