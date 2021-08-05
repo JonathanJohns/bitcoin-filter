@@ -19,10 +19,10 @@ class Customers extends Component {
     };
 
     this.handleChange = this.handleChange.bind(this);
-    this.handleChange = this.handleFrom.bind(this);
-    this.handleChange = this.handleTo.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleFrom= this.handleFrom.bind(this);
+    this.handleTo = this.handleTo.bind(this);
     this.handleWishlist = this.handleWishlist.bind(this);
+    this.handleFilter = this.handleFilter.bind(this);
 
   }
 
@@ -39,6 +39,19 @@ class Customers extends Component {
       return 'text-success';
    }
   }
+  isPrime(num) {
+    if(num % 2 === 0) {
+      // document.write('Number is even!');
+      // return false;
+      // return `<span style="color:red>${num}</span>`;
+      return 'false';
+   } else {
+      // document.write('Number is odd!');
+      // return `<span style="color:green>${num}</span>`;
+      // return true;
+      return 'true';
+   }
+  }
 
   handleChange(event) {
     this.setState({value: event.target.value});
@@ -52,10 +65,10 @@ class Customers extends Component {
 
 
 
-  handleSubmit(event) {
-    alert('A name was submitted: ' + this.state.value);
-    event.preventDefault();
-  }
+  // handleSubmit(event) {
+  //   alert('A name was submitted: ' + this.state.value);
+  //   event.preventDefault();
+  // }
 
   handleWishlist(id) {
     console.log(id)
@@ -69,6 +82,7 @@ class Customers extends Component {
     const format = {
       date: final[0].date,
       rate: final[0].rate,
+      is_prime: this.isPrime(final[0].rate),
     }
 
     // console.log(format)
@@ -100,6 +114,17 @@ class Customers extends Component {
   
 }
 
+  handleFilter(event) {
+    event.preventDefault();
+
+    let from = this.state.from;
+    let to = this.state.to;
+    fetch(`/api/bitcoin-prices/${from}/${to}`)
+      .then(res => res.json())
+      .then(bitcoin_prices => this.setState({bitcoin_prices}, () => console.log('bitcoin_prices fetched...', bitcoin_prices)));
+  }
+  
+
 
   componentDidMount() {
     fetch('/api/bitcoin-prices')
@@ -107,22 +132,10 @@ class Customers extends Component {
       .then(bitcoin_prices => this.setState({bitcoin_prices}, () => console.log('bitcoin_prices fetched...', bitcoin_prices)));
   }
 
-//   render() {
-//     return (
-//       <div>
-//         <h2>bitcoin_prices</h2>
-//         <ul>
-//         {this.state.bitcoin_prices.map(customer => 
-//           <li key={customer.id}>{customer.firstName} {customer.lastName}</li>
-//         )}
-//         </ul>
-//       </div>
-//     );
-//   }
-// }
+
   render() {
     return (
-      <div className="container text-left">
+      <div className="container text-left bg-white rounded text-dark">
         <h2 className="my-3 text-left">Select a range</h2>
 
         
@@ -132,15 +145,15 @@ class Customers extends Component {
         )}
         </ul> */}
 
-    <form className="form-inline mb-2" onSubmit={this.handleSubmit}>
+    <form className="form-inline mb-2" onSubmit={this.handleFilter}>
     <div class="form-group mb-2">
     <label for="staticEmail2" className="sr-only">from</label>
-    <input type="date" placeholder="From" value={this.state.value} onChange={this.handleFrom} />
+    <input type="date" placeholder="From" value={this.state.from} onChange={this.handleFrom} />
   </div>
 
   <div class="form-group mx-sm-3 mb-2">
     <label for="inputPassword2" className="sr-only">to</label>
-    <input type="date" placeholder="to" value={this.state.value} onChange={this.handleTo} />
+    <input type="date" placeholder="to" value={this.state.to} onChange={this.handleTo} />
   </div>
         {/* <label>
           Name:
@@ -173,7 +186,7 @@ class Customers extends Component {
 
           <tr key={price.id}>
       {/* <th scope="col">#</th> */}
-      <th scope="col" className="text-left">{moment(price.date).format("Do MMMM YYYY")}</th>
+      <th scope="col" className="text-left">{moment(price.date).format("YYYY/MM/DD")}</th>
 
       
       <th scope="col"  className="text-left"><span className={this.isOdd(price.rate)}>${price.rate}</span></th>

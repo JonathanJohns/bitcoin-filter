@@ -1,74 +1,42 @@
 const express = require('express');
-const cors = require('cors');
-const db = require('./database')
-const bitcoin_prices = require('./bitcoin_prices')
+const session = require('express-session');
 
-// const bodyParser = require('body-parser')
-// express.use(bodyParser.urlencoded({ extended: false }))
+const passport = require('passport')
+const local = require('./strategies/local')
 
-// // parse expresslication/json
-// express.use(bodyParser.json())
-
-
-
+const homeRoute = require('./routes/home');
+const authRoute = require('./routes/auth');
+const apiRoute = require('./routes/api');
 
 
 const app = express();
+
+const store = new session.MemoryStore();
+
+app.use(session({
+    secret: 'some secret',
+    cookie: {maxAge: 30000},
+    saveUninitialized:false,
+    store
+})) 
 
 app.use(express.json());
 app.use(express.urlencoded({
     extended: false, 
 }));
 
-app.get('/api/customers', cors(), (req, res) => {
-  const customers = [
-    {id: 1, firstName: 'John', lastName: 'Doe'},
-    {id: 2, firstName: 'Brad', lastName: 'Traversy'},
-    {id: 3, firstName: 'Mary', lastName: 'Swanson'},
-  ];
+app.use(passport.initialize());
+app.use(passport.session());
 
-  res.json(customers);
-});
 
-app.get('/api/bitcoin-prices',cors(), (req, res) => {
-  // const customers = [
-  //   {id: 1, firstName: 'John', lastName: 'Doe'},
-  //   {id: 2, firstName: 'Brad', lastName: 'Traversy'},
-  //   {id: 3, firstName: 'Mary', lastName: 'Swanson'},
-  // ];
+app.use('/', homeRoute)
+app.use('/auth', authRoute)
+app.use('/api', apiRoute)
+ 
 
-  res.json(bitcoin_prices);
-})
 
-app.get('/api/wishlist',cors(), (req, res) => {
 
-  const user_id = 3;
 
-  db.query(
-    `SELECT * FROM wishlist WHERE user_id=${user_id}`,
-    
-    function(err, results) {
-      console.log(results);
-          res.json(results); 
-    }
-  );
-})
-
-app.post('/api/wishlist',cors(), (req, res) => {
-
-  const prime_numbers = 5;
-
-  db.query(
-    `INSERT INTO wishlist (date,bitcoin_value, prime_numbers, user_id)
-    VALUES ('${req.body.date}', '${req.body.rate}', '${prime_numbers}', '${3}') 
-    ORDER BY id DESC    `,
-    
-    function(err, results) {
-      console.log(results);
-      res.json(results);
-    }
-  );
-})
 
 const port = 5000;
 

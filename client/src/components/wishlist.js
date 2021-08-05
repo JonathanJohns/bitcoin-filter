@@ -62,6 +62,8 @@ class Wishlist extends Component {
     fetch('/api/wishlist')
       .then(res => res.json())
       .then(bitcoin_prices => this.setState({bitcoin_prices}, () => console.log('bitcoin_prices fetched...', bitcoin_prices)));
+
+    
   }
 
 //   render() {
@@ -79,7 +81,7 @@ class Wishlist extends Component {
 // }
   render() {
     return (
-      <div className="container text-left">
+      <div className="container text-left bg-white rounded text-dark">
         <h2 className="my-3 text-left">Your Wishlist</h2>
 
         
@@ -116,7 +118,7 @@ class Wishlist extends Component {
     <tr>
       {/* <th scope="col">#</th> */}
       <th scope="col"  className="text-left">Date</th>
-      <th scope="col" className="text-left">Price</th>
+      <th scope="col" className="text-left">Bitcoin Value</th>
       <th scope="col" className="text-left">Prime Numbers</th>
       
       
@@ -130,7 +132,7 @@ class Wishlist extends Component {
 
           <tr key={price.id}>
       {/* <th scope="col">#</th> */}
-      <th scope="col" className="text-left">{moment(price.date).format("Do MMMM YYYY")}</th>
+      <th scope="col" className="text-left">{moment(price.date).format("DD/MM/YYYY")}</th>
 
       
       <th scope="col"  className="text-left"><span className={this.isOdd(price.bitcoin_value)}>${price.bitcoin_value}</span></th>
@@ -138,7 +140,7 @@ class Wishlist extends Component {
         
         {/* {customer.rate} */}
 
-        <button type="button" onClick={() => this.handleWishlist(price.id)} class="btn btn-primary">{price.prime_numbers}</button>
+        <span  class="">{price.prime_numbers}</span>
         
         </th>
       

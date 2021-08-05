@@ -1,16 +1,17 @@
 import React, { Component } from 'react';
 // import logo from './logo.svg';
-import logo from './bitcoin.png';
+
 import './App.css';
-import Customers from './components/customers';
-import Wishlist from './components/wishlist';
+
+import Login from './components/login';
+import Dashboard from './components/dashboard';
 
 class App extends Component {
 
   constructor() {
     super();
     this.state = {
-      wishlist:false,
+      logged_in:true,
     };
 
     // this.handleChange = this.handleChange.bind(this);
@@ -20,30 +21,36 @@ class App extends Component {
     // this.handleWishlist = this.handleWishlist.bind(this);
 
   }
+
+  componentDidMount() {
+    fetch('/auth/check')
+      .then(res => {
+        if (res.status == 200) {
+            this.setState({logged_in: true})
+      
+        } 
+      })
+      // .then(bitcoin_prices =>{
+      //   this.setState({bitcoin_prices}
+      // } , () => console.log('bitcoin_prices fetched...', bitcoin_prices)));
+
+    
+  }
+
+
+
   render() {
     return (
       <div className="App">
-        <div className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title mt-3">Bitcoin Price Filter</h1>
-    
-          <div className="row mt-3">
-            <div className="col-12 ">
-              </div>
-          <div className="col text-right" style={{borderRight: '1px solid silver'}}>
-              <button onClick={() => this.setState({wishlist: false})} className="App-title mt-0 btn btn-default" style={{color: !this.state.wishlist ? '#007bff': 'white', fontSize: '18px'}}>Home</button>
-          </div>
-          <div className="col text-left">
-               <button onClick={() => this.setState({wishlist: true})} className="App-title mt-0 btn btn-default" style={{color: this.state.wishlist ? '#007bff': 'white', fontSize: '18px'}}>Wishlist</button>
-          </div>
+        
+        {/* <div className="row text-white"> */}
+          {this.state.logged_in ? <Dashboard />: <Login />}
+              
+        {/* </div> */}
 
-
-          
-        </div>
-        </div>
 
         
-        {this.state.wishlist ? <Wishlist />: <Customers />}
+        
         
       </div>
     );
